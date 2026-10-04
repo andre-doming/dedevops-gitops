@@ -17,6 +17,6 @@ spec:
         - name: hello
           image: hashicorp/http-echo:1.0
           args:
-            - "-text=DEDEVOPS - DEPLOY VIA ARGO CD"
+            - "-text=DEDEVOPS - GITOPS FUNCIONANDO"
           ports:
             - containerPort: 5678
