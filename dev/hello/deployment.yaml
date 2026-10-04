@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hello-gitops
+  namespace: dev
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hello-gitops
+  template:
+    metadata:
+      labels:
+        app: hello-gitops
+    spec:
+      containers:
+        - name: hello
+          image: hashicorp/http-echo:1.0
+          args:
+            - "-text=DEDEVOPS - DEPLOY VIA ARGO CD"
+          ports:
+            - containerPort: 5678
