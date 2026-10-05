@@ -16,5 +16,5 @@ provider "kubernetes" {
 module "terraform_system" {
   source = "../../modules/kubernetes-namespace"
 
-  name = "terraform-system"
+  name = var.terraform_namespace
 }
