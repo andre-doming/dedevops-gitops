@@ -4,3 +4,7 @@
 # Terraform state
 **/*.tfstate
 **/*.tfstate.*
+
+# Terraform plan files
+*.tfplan
+tfplan
