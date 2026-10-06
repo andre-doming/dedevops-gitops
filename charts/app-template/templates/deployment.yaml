@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "app-template.fullname" . }}
+  labels:
+    {{- include "app-template.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.workload.replicas }}
+  selector:
+    matchLabels:
+      {{- include "app-template.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "app-template.selectorLabels" . | nindent 8 }}
+        istio.io/dataplane-mode: none
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+
+      containers:
+        - name: {{ include "app-template.name" . }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+
+          {{- if ne .Values.workload.type "worker" }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.targetPort }}
+              protocol: TCP
+          {{- end }}
+
+          {{- if .Values.env }}
+          env:
+            {{- toYaml .Values.env | nindent 12 }}
+          {{- end }}
+
+          {{- if and .Values.probes.enabled (ne .Values.workload.type "worker") }}
+          readinessProbe:
+            httpGet:
+              path: {{ .Values.probes.path }}
+              port: {{ .Values.probes.port }}
+            initialDelaySeconds: 5
+            periodSeconds: 10
+
+          livenessProbe:
+            httpGet:
+              path: {{ .Values.probes.path }}
+              port: {{ .Values.probes.port }}
+            initialDelaySeconds: 10
+            periodSeconds: 15
+          {{- end }}
+
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
