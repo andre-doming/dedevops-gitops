@@ -35,6 +35,17 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 Selector labels.
 */}}
 {{- define "app-template.selectorLabels" -}}
+{{- if .Values.selectorLabels }}
+{{- toYaml .Values.selectorLabels }}
+{{- else }}
 app.kubernetes.io/name: {{ include "app-template.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end }}
+{{- end }}
+
+{{/*
+Create the NetworkPolicy name.
+*/}}
+{{- define "app-template.networkPolicyName" -}}
+{{- default (include "app-template.fullname" .) .Values.networkPolicy.nameOverride | trunc 63 | trimSuffix "-" }}
 {{- end }}

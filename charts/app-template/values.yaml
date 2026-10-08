@@ -5,6 +5,11 @@ workload:
   type: api
   replicas: 2
 
+container:
+  name: ""
+
+selectorLabels: {}
+
 image:
   repository: ""
   tag: ""
@@ -24,6 +29,7 @@ ingress:
   tls:
     enabled: true
     clusterIssuer: dedevops-ca
+    secretName: ""
 
 probes:
   enabled: true
@@ -40,5 +46,6 @@ resources:
 
 networkPolicy:
   enabled: true
+  ingress: []
 
 env: []
