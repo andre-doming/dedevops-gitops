@@ -25,6 +25,11 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
 
+          {{- if .Values.container.args }}
+          args:
+            {{- toYaml .Values.container.args | nindent 12 }}
+          {{- end }}
+
           {{- if ne .Values.workload.type "worker" }}
           ports:
             - name: http

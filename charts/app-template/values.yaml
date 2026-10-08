@@ -7,6 +7,7 @@ workload:
 
 container:
   name: ""
+  args: []
 
 selectorLabels: {}
 
