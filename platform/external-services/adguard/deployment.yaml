@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: adguard-proxy
+  namespace: infra
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: adguard-proxy
+  template:
+    metadata:
+      labels:
+        app: adguard-proxy
+    spec:
+      containers:
+        - name: nginx
+          image: nginx:1.28
+          ports:
+            - name: http
+              containerPort: 8080
+          volumeMounts:
+            - name: nginx-config
+              mountPath: /etc/nginx/conf.d/default.conf
+              subPath: default.conf
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 8080
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 8080
+      volumes:
+        - name: nginx-config
+          configMap:
+            name: adguard-proxy-nginx
