@@ -1,0 +1,24 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: adguard
+  namespace: infra
+  annotations:
+    cert-manager.io/cluster-issuer: dedevops-ca
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: adguard.dedevops
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: adguard-proxy
+                port:
+                  number: 80
+  tls:
+    - hosts:
+        - adguard.dedevops
+      secretName: adguard-dedevops-tls
