@@ -1,0 +1,70 @@
+fullnameOverride: partnersolution-web
+
+workload:
+  type: api
+  replicas: 1
+
+container:
+  name: partnersolution-web
+
+selectorLabels:
+  app: partnersolution-web
+
+image:
+  repository: ghcr.io/andre-doming/partnersolution-web
+  tag: sha-e07167e67e26745cc2d5b3a2fbc94ba8db97710d
+  pullPolicy: IfNotPresent
+
+imagePullSecrets:
+  - name: ghcr-pull
+
+service:
+  enabled: true
+  port: 80
+  targetPort: 80
+
+ingress:
+  enabled: true
+  host: partnersolution.dedevops
+  ingressClassName: nginx
+  paths:
+    - path: /api
+      pathType: Prefix
+      serviceName: partnersolution-api
+      servicePort: 80
+    - path: /
+      pathType: Prefix
+      serviceName: partnersolution-web
+      servicePort: 80
+  tls:
+    enabled: true
+    clusterIssuer: dedevops-ca
+    secretName: partnersolution-dedevops-tls
+
+probes:
+  enabled: true
+  path: /
+  port: 80
+
+resources:
+  requests:
+    cpu: 50m
+    memory: 64Mi
+  limits:
+    cpu: 500m
+    memory: 256Mi
+
+networkPolicy:
+  enabled: true
+  nameOverride: allow-infra-ingress-to-partnersolution-web
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: infra
+          podSelector:
+            matchLabels:
+              app.kubernetes.io/name: ingress-nginx
+      ports:
+        - protocol: TCP
+          port: 80
