@@ -14,6 +14,10 @@ spec:
       labels:
         {{- include "app-template.selectorLabels" . | nindent 8 }}
         istio.io/dataplane-mode: none
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:

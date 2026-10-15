@@ -1,0 +1,16 @@
+# Temporary render test only — not used by Argo/Helm releases in dev/.
+# Example: same host, /api → API Service, / → web Service (PartnerSolution).
+fullnameOverride: partnersolution-ingress-test
+
+ingress:
+  enabled: true
+  host: partnersolution.dedevops
+  paths:
+    - path: /api
+      pathType: Prefix
+      serviceName: partnersolution-api
+      servicePort: 80
+    - path: /
+      pathType: Prefix
+      serviceName: partnersolution-web
+      servicePort: 80

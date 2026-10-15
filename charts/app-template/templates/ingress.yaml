@@ -13,6 +13,17 @@ spec:
     - host: {{ .Values.ingress.host }}
       http:
         paths:
+          {{- if .Values.ingress.paths }}
+          {{- range .Values.ingress.paths }}
+          - path: {{ .path }}
+            pathType: {{ .pathType }}
+            backend:
+              service:
+                name: {{ .serviceName }}
+                port:
+                  number: {{ .servicePort }}
+          {{- end }}
+          {{- else }}
           - path: /
             pathType: Prefix
             backend:
@@ -20,6 +31,7 @@ spec:
                 name: {{ include "app-template.fullname" . }}
                 port:
                   number: {{ .Values.service.port }}
+          {{- end }}
   {{- if .Values.ingress.tls.enabled }}
   tls:
     - hosts:

@@ -11,6 +11,8 @@ container:
 
 selectorLabels: {}
 
+podAnnotations: {}
+
 image:
   repository: ""
   tag: ""
@@ -27,6 +29,7 @@ ingress:
   enabled: false
   host: ""
   ingressClassName: nginx
+  paths: []
   tls:
     enabled: true
     clusterIssuer: dedevops-ca
